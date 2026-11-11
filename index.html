@@ -127,8 +127,10 @@ h2 em{font-style:normal;color:var(--violet-l)}
 .chip:hover{border-color:var(--violet-l);color:#fff}
 .chip.on{background:var(--violet);border-color:var(--violet);color:#fff;font-weight:700}
 .chip sup{font-size:11px;opacity:.75;margin-left:3px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.card{position:relative;border-radius:22px;overflow:hidden;background:var(--ink-3);aspect-ratio:9/16;text-align:left;isolation:isolate}
+.grid{display:flex;gap:14px;align-items:flex-start}
+.grid .mcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
+.card{position:relative;display:block;width:100%;border-radius:22px;overflow:hidden;background:var(--ink-3);aspect-ratio:9/16;text-align:left;isolation:isolate}
+.card img{object-position:center 30%}
 .card img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
 .card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(14,12,22,.94));z-index:1}
 .card:hover img{transform:scale(1.05)}
@@ -141,7 +143,7 @@ h2 em{font-style:normal;color:var(--violet-l)}
 .card:hover .play{background:var(--lime)}
 .play svg{width:14px;height:14px;fill:#fff;margin-left:2px}
 .card:hover .play svg{fill:var(--ink)}
-@media(max-width:520px){.grid{grid-template-columns:1fr 1fr;gap:10px}.card .t{font-size:14px}}
+@media(max-width:520px){.grid,.grid .mcol{gap:10px}.card .t{font-size:14px}}
 
 /* posts & logos */
 .pgrid{display:flex;gap:14px;align-items:flex-start}
@@ -495,14 +497,22 @@ function renderChips(){
 }
 const VSTEP=15, PSTEP=12; let vshow=VSTEP, pshow=PSTEP;
 const moreBtn=(el,left,fn)=>{el.innerHTML=left>0?`<button>${L==="en"?"Show more":"Daha fazla göster"} (${left})</button>`:"";if(left>0)el.firstChild.onclick=fn;};
+const VPAT=[1.78,1.25,1.5,1.0,1.6,1.33,1.78,1.15];
+const vcols=()=>{const w=$("#vgrid").clientWidth||innerWidth;return w>=1080?4:w>=720?3:2};
+let lastV=0;
+addEventListener("resize",()=>{if(vcols()!==lastV)renderGrid()},{passive:true});
 function renderGrid(){
   const vs = V.filter(v=>cur==="all"||v[1]===cur);
   const cn = Object.fromEntries(CATS.map(c=>[c.id,tx(c)]));
-  $("#vgrid").innerHTML = vs.slice(0,vshow).map(v=>`<button class="card" data-v="${v[0]}" aria-label="${L==="en"?v[3]:v[2]}">
+  const n=vcols(); lastV=n; const cols=Array.from({length:n},()=>[]), hs=Array(n).fill(0);
+  vs.slice(0,vshow).forEach((v,i)=>{const r=VPAT[i%VPAT.length]; const c=hs.indexOf(Math.min(...hs));
+    cols[c].push(`<button class="card" data-k="${i}" data-v="${v[0]}" style="aspect-ratio:1/${r}" aria-label="${L==="en"?v[3]:v[2]}">
     <img src="p/${v[0]}.jpg" alt="" loading="lazy"><span class="play">${PLAY}</span>
-    <span class="meta"><span class="cat">${cn[v[1]]}</span><span class="t">${L==="en"?v[3]:v[2]}</span><span class="d">${src(v)} · ${fmt(DUR[v[0]]||0)}</span></span></button>`).join("");
+    <span class="meta"><span class="cat">${cn[v[1]]}</span><span class="t">${L==="en"?v[3]:v[2]}</span><span class="d">${src(v)} · ${fmt(DUR[v[0]]||0)}</span></span></button>`);
+    hs[c]+=r;});
+  $("#vgrid").innerHTML = cols.map(c=>`<div class="mcol">${c.join("")}</div>`).join("");
   const items = vs.map(v=>({t:"v",s:v[0],title:L==="en"?v[3]:v[2],cat:src(v)+" · "+cn[v[1]]}));
-  $("#vgrid").querySelectorAll(".card").forEach((c,i)=>c.onclick=()=>openM(items,i));
+  $("#vgrid").querySelectorAll(".card").forEach(c=>c.onclick=()=>openM(items,+c.dataset.k));
   moreBtn($("#vmore"),vs.length-vshow,()=>{vshow+=VSTEP;renderGrid()});
 }
 let pcur="all";
