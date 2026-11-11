@@ -150,23 +150,43 @@ h2 em{font-style:normal;color:var(--violet-l)}
 @media(max-width:520px){.grid{column-gap:10px}.grid .card{margin-bottom:10px}.card .t{font-size:14px}.card.wide .t{font-size:18px}}
 
 /* posts & logos */
-.pgrid{display:flex;gap:14px;align-items:flex-start}
-.mcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
-.post{display:flex;flex-direction:column;text-align:left;border-radius:22px;background:var(--ink-2);border:1px solid var(--line);overflow:hidden;transition:border-color .2s}
-.post:hover{border-color:var(--violet-l)}
-.post .im{display:block;overflow:hidden;background:var(--ink-3)}
-.post img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.post:hover img{transform:scale(1.04)}
+.pgrid{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));grid-auto-rows:1px;grid-auto-flow:row dense;column-gap:14px;align-items:start}
+.post{display:flex;flex-direction:column;text-align:left;border-radius:22px;background:var(--ink-2);border:1px solid var(--line);overflow:hidden;transition:border-color .2s;cursor:pointer;margin:0}
+.post:hover,.post:focus-visible{border-color:var(--violet-l);outline:0}
+.post .im{display:block;overflow:hidden;background:var(--ink-3);position:relative}
+.post img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.post:not(.car):not(.wide):hover img{transform:scale(1.04)}
+.rowim{display:flex!important;flex-direction:column;gap:8px;padding:8px;background:var(--ink-3)}
+.prow{display:flex;gap:8px;align-items:flex-start}
+.pi{flex-basis:0;min-width:0;border-radius:12px;overflow:hidden;display:block}
+.pi:hover img{transform:scale(1.04)}
+.rowim.sc .prow{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:-6px;padding:6px}
+.rowim.sc .prow::-webkit-scrollbar{display:none}
+.rowim.sc .pi{flex:0 0 auto!important;width:auto;height:min(330px,78vw);aspect-ratio:auto!important;scroll-snap-align:start}
+.rowim.sc .pi img{width:auto;height:100%}
+.carim .track{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.carim .track::-webkit-scrollbar{display:none}
+.carim .track img{flex:0 0 100%;scroll-snap-align:start}
+.cbadge{position:absolute;top:10px;right:10px;display:flex;align-items:center;gap:3px;padding:5px 9px;border-radius:99px;background:rgba(17,17,20,.72);backdrop-filter:blur(6px);font-size:12px;font-weight:700;color:#fff}
+.cbadge svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:1.6;margin-right:3px}
+.cbadge i{font-style:normal}
+.dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:5px}
+.dots i{width:6px;height:6px;border-radius:9px;background:rgba(255,255,255,.45);transition:.25s}
+.dots i.on{width:18px;background:var(--lime)}
 .cap{padding:13px 16px 15px}
 .cap b{display:block;font-size:14px;font-weight:800;font-stretch:112%;color:var(--lime)}
 .cap span{display:block;font-size:13.5px;color:#C3C2CD;line-height:1.35}
-@media(max-width:520px){.pgrid,.mcol{gap:10px}}
-.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.logo-c{display:flex;flex-direction:column;text-align:left;border-radius:22px;overflow:hidden;background:var(--ink-2);border:1px solid var(--line);transition:border-color .2s}
-.logo-c:hover{border-color:var(--lime)}
-.logo-c .im{overflow:hidden;aspect-ratio:4/3;background:#fff}
-.logo-c img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.logo-c:hover img{transform:scale(1.03)}
+@media(max-width:520px){.pgrid{column-gap:10px}.rowim,.prow{gap:6px}.rowim{padding:6px}}
+.lgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media(max-width:900px){.lgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.lgrid{gap:10px}.logo-c .im{padding:12%}}
+.logo-c{display:flex;flex-direction:column;text-align:left;border-radius:22px;overflow:hidden;background:var(--ink-2);border:1px solid var(--line);transition:border-color .25s,box-shadow .25s}
+.logo-c:hover{border-color:rgba(185,245,0,.6);box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.logo-c .im{position:relative;display:grid;place-items:center;aspect-ratio:4/3;padding:9% 12%;overflow:hidden;
+  background:radial-gradient(90% 70% at 50% 0%,rgba(114,59,250,.22),transparent 70%),linear-gradient(180deg,#1B1B21,#141418);border-bottom:1px solid var(--line)}
+.logo-c .im::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:16px 16px;pointer-events:none}
+.logo-c img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;transition:transform .5s}
+.logo-c:hover img{transform:scale(1.05)}
 
 .more{display:flex;justify-content:center;margin-top:28px}
 .more button{padding:13px 26px;border-radius:99px;border:1px solid var(--line);background:var(--ink-2);font-weight:700;font-size:15px;transition:.2s}
@@ -176,10 +196,11 @@ h2 em{font-style:normal;color:var(--violet-l)}
 /* timeline / tools */
 .two{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
 .two>div{border-radius:var(--r);background:var(--ink-2);border:1px solid var(--line);padding:clamp(26px,3.5vw,44px)}
-.tl{list-style:none;border-left:2px solid var(--line);padding-left:26px}
+.tl{list-style:none;padding-left:34px}
 .tl li{position:relative;padding-bottom:28px}
 .tl li:last-child{padding-bottom:0}
-.tl li::before{content:"";position:absolute;left:-34px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--ink-2);border:3px solid var(--violet)}
+.tl li::before{content:"";position:absolute;z-index:1;box-sizing:border-box;left:-34px;top:3px;width:18px;height:18px;border-radius:50%;background:var(--ink-2);border:3px solid var(--violet)}
+.tl li:not(:last-child)::after{content:"";position:absolute;left:-26px;top:12px;bottom:-12px;width:2px;background:var(--line)}
 .tl li.now::before{background:var(--lime);border-color:var(--lime)}
 .tl .when{font-size:12px;font-weight:700;color:var(--lime);letter-spacing:.1em;text-transform:uppercase}
 .tl h4{font-stretch:112%;font-size:21px;font-weight:800;line-height:1.2;margin:4px 0}
@@ -187,7 +208,7 @@ h2 em{font-style:normal;color:var(--violet-l)}
 .tools{display:flex;flex-wrap:wrap;gap:8px}
 .tools span{padding:11px 16px;border-radius:99px;background:var(--ink-3);border:1px solid var(--line);font-weight:500;font-size:15px}
 .tools span.ai{border-color:var(--lime);color:var(--lime)}
-.edu{margin-top:22px;padding:24px;border-radius:20px;background:var(--ink-3);border:1px solid var(--line)}
+.edu{margin:0 0 34px;padding:24px;border-radius:20px;background:var(--ink-3);border:1px solid var(--line)}
 .edu small{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lime)}
 .edu h4{font-stretch:112%;font-size:21px;font-weight:800;margin:6px 0 2px;line-height:1.2}
 .edu p{color:var(--mute);font-size:15px}
@@ -263,9 +284,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <header class="hero" id="top">
   <div class="wrap">
     <div>
-      <span class="eyebrow"><i></i><span data-i="eyebrow">Sosyal Medya Uzmanı · İçerik Üreticisi · İletişimci · Tasarımcı</span></span>
+      <span class="eyebrow"><i></i><span data-i="eyebrow">Sosyal Medya Uzmanı · İçerik Üreticisi · İletişimci & Tasarımcı</span></span>
       <h1>Hilal<br><em>Tuncer</em></h1>
-      <p class="lead" data-i="lead">Akımı erken yakalayan, yerele uyarlayan ve milyonlarca izlenmeye ulaşan içerikler üretiyorum. Strateji, çekim, kurgu, tasarım ve metin: fikirden yayına tek elden.</p>
+      <p class="lead" data-i="lead">Akımları erken yakalayıp markanın diline çeviriyor, milyonlara ulaşan içerikler üretiyorum. Fikirden çekime, kurgudan tasarıma ve metne kadar her adımı aynı özenle, tek elden yürütüyorum.</p>
       <div class="cta">
         <a href="#videolar" class="btn p" data-i="cta1">İşlerimi gör →</a>
         <a href="#iletisim" class="btn g cl" data-i="cta2">İletişime geç</a>
@@ -323,14 +344,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="about">
       <div class="reveal">
         <div class="sh" style="margin-bottom:22px"><div><small data-i="a_k">Hakkımda</small><h2 data-i="a_h">Sosyal medyanın <em>nabzını</em> tutuyorum</h2></div></div>
-        <p data-i="a_p1">Bir yıldır Başakşehir Belediyesi'nde sosyal medya yöneticisi ve ekip koordinatörü olarak çalışıyorum. Belediye başkanı için iletişim stratejileri geliştiriyor, gündem raporları hazırlıyor ve kurumun sosyal medyadaki sesini yönetiyorum.</p>
+        <p data-i="a_p1">Bir yıldır Başakşehir Belediyesi'nde sosyal medya uzmanı ve ekip koordinatörü olarak çalışıyorum. Belediye başkanı için iletişim stratejileri geliştiriyor, gündem raporları hazırlıyor ve kurumun sosyal medyadaki sesini yönetiyorum.</p>
         <p data-i="a_p2">Çekim, kurgu ve tasarım geçmişim sayesinde bir içeriği fikir aşamasından yayına kadar her adımıyla üretebiliyor, metnini de kendim yazıyorum. Akımları yakından takip ediyor, şehrin ve markanın diline uyarlıyorum.</p>
         <p data-i="a_p3">Öncesinde yaklaşık üç yıl tasarım, çekim ve kurumsal iletişim alanlarında tam zamanlı, yarı zamanlı ve serbest olarak çalıştım. İbn Haldun Üniversitesi'nde Radyo, Televizyon ve Sinema yüksek lisansına devam ediyorum. Yapay zekâ araçları üretim sürecimin doğal bir parçası.</p>
       </div>
       <div class="orbit-wrap reveal">
         <div class="orbit" aria-label="Yetkinlikler">
           <div class="ring"></div>
-          <div class="core"><div><b data-i="k_core">Yetkinlikler</b><small data-i="k_core2">6 ALAN</small></div></div>
+          <div class="core"><div><b data-i="k_core">Yetkinlikler</b></div></div>
           <div class="skill" style="--i:0"><div class="si"><span class="n">01</span><h3 data-i="k1">Strateji & Raporlama</h3><p data-i="k1p">İletişim stratejisi, gündem takibi ve sosyal medya raporları</p></div></div>
           <div class="skill" style="--i:1"><div class="si"><span class="n">02</span><h3 data-i="k2">Akım Yerelleştirme</h3><p data-i="k2p">Trendleri erken yakalayıp şehre ve markaya uyarlama</p></div></div>
           <div class="skill" style="--i:2"><div class="si"><span class="n">03</span><h3 data-i="k3">Çekim & Kurgu</h3><p data-i="k3p">Reels, dizi formatları, röportaj ve tanıtım videoları</p></div></div>
@@ -348,21 +369,21 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="reveal">
       <div class="sh"><div><small data-i="e_k">Deneyim</small><h2 data-i="e_h">Yolculuk</h2></div></div>
       <ul class="tl">
-        <li class="now"><span class="when" data-i="e1w">Günümüz · 1 yıl</span><h4 data-i="e1">Sosyal Medya Yöneticisi & Ekip Koordinatörü</h4><p data-i="e1p">Başakşehir Belediyesi · Başkanlık iletişim stratejisi, içerik üretimi, raporlama ve ekip yönetimi</p></li>
+        <li class="now"><span class="when" data-i="e1w">Günümüz · 1 yıl</span><h4 data-i="e1">Sosyal Medya Uzmanı & Ekip Koordinatörü</h4><p data-i="e1p">Başakşehir Belediyesi · Başkanlık iletişim stratejisi, içerik üretimi, raporlama ve ekip yönetimi</p></li>
         <li><span class="when" data-i="e2w">Marka iş birliği</span><h4 data-i="e2">Sosyal Medya Uzmanı & İçerik Üreticisi</h4><p data-i="e2p">TalepNET · B2B satın alma platformu. Sosyal medya yönetimi, içerik üretimi ve tüm paylaşım tasarımları</p></li>
         <li><span class="when" data-i="e3w">Marka iş birliği</span><h4 data-i="e3">Sosyal Medya Uzmanı, İletişimci & Tasarımcı</h4><p data-i="e3p">3W Design Lab · Tasarım stüdyosu. Marka dili, reels ve sosyal medya iletişimi</p></li>
-        <li><span class="when" data-i="e4w">Yaklaşık 3 yıl</span><h4 data-i="e4">Tasarım, Çekim & Kurumsal İletişim</h4><p data-i="e4p">Tam zamanlı, yarı zamanlı ve serbest projeler</p></li>
+        <li><span class="when" data-i="e4w">3 yıl</span><h4 data-i="e4">Tasarım, Çekim & Kurumsal İletişim</h4><p data-i="e4p">Tam zamanlı, yarı zamanlı ve serbest projeler</p></li>
       </ul>
     </div>
     <div class="reveal">
-      <div class="sh"><div><small data-i="t_k">Araçlar</small><h2 data-i="t_h">Çalışma <em>seti</em></h2></div></div>
-      <div class="tools">
-        <span>CapCut</span><span>Adobe Premiere Pro</span><span data-i="t_adobe">Adobe Photoshop & Illustrator</span><span>Canva</span><span>Figma</span><span>Meta Business Suite</span><span class="ai" data-i="t_ai">Yapay zekâ araçları</span>
-      </div>
       <div class="edu">
         <small data-i="ed_k">Eğitim</small>
-        <h4 data-i="ed_h">Radyo, Televizyon ve Sinema · Yüksek Lisans</h4>
-        <p data-i="ed_p">İbn Haldun Üniversitesi · Devam ediyor</p>
+        <h4 data-i="ed_h">İbn Haldun Üniversitesi · Yüksek Lisans</h4>
+        <p data-i="ed_p">Radyo, Televizyon ve Sinema · Devam ediyor</p>
+      </div>
+      <div class="sh"><div><small data-i="t_k">Araçlar</small><h2 data-i="t_h">Çalışma <em>seti</em></h2></div></div>
+      <div class="tools">
+        <span>Figma</span><span>Adobe Premiere Pro</span><span data-i="t_adobe">Adobe Photoshop & Illustrator</span><span>Canva</span><span>CapCut</span><span class="ai" data-i="t_ai">Yapay zekâ araçları</span><span>Meta Business Suite</span>
       </div>
     </div>
   </div>
@@ -377,7 +398,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </section>
 
-<footer><div class="wrap"><span>© 2026 Hilal Tuncer</span><span data-i="foot">Sosyal Medya Uzmanı · İçerik Üreticisi · İletişimci · Tasarımcı · İstanbul</span></div></footer>
+<footer><div class="wrap"><span>© 2026 Hilal Tuncer</span><span data-i="foot">Sosyal Medya Uzmanı · İçerik Üreticisi · İletişimci & Tasarımcı · İstanbul</span></div></footer>
 
 <div class="modal" id="modal" role="dialog" aria-modal="true">
   <button class="mx" id="mx" aria-label="Kapat">×</button>
@@ -453,32 +474,42 @@ const src = v => v[4] || tx(BSK);
 const TY = {
  post:{tr:"Instagram gönderisi",en:"Instagram post"}, car:{tr:"Carousel",en:"Carousel"}, story:{tr:"Hikâye tasarımı",en:"Story design"},
  bro:{tr:"Broşür",en:"Brochure"}, camp:{tr:"Kampanya görseli",en:"Campaign visual"}, web:{tr:"Webinar duyurusu",en:"Webinar announcement"},
- news:{tr:"Haber kartı",en:"News card"}, comic:{tr:"Çizgi roman serisi",en:"Comic series"}, brand:{tr:"Marka dili",en:"Brand language"}, cover:{tr:"Reels kapağı",en:"Reels cover"}
+ news:{tr:"Haber kartı",en:"News card"}, comic:{tr:"Çizgi roman serisi",en:"Comic series"}, brand:{tr:"Marka dili",en:"Brand language"}, cover:{tr:"Reels kapağı",en:"Reels cover"},
+ newss:{tr:"Haber kartları",en:"News cards"}, camps:{tr:"Kampanya serisi",en:"Campaign series"}, bros:{tr:"Broşür serisi",en:"Brochure series"}
 };
+// s: tek görsel · row: yan yana seri · car: kaydırmalı carousel
 const POSTS = [
- ["tn-ig1","TalepNET","post"],["tn-ig2","TalepNET","post"],["tn-ig3","TalepNET","car"],["tn-ig4","TalepNET","car"],
- ["tb4","TalepNET","post"],["tb5","TalepNET","post"],["tb6","TalepNET","post"],["tn-crm","TalepNET","post"],["tn-teklif","TalepNET","post"],
- ["tn-kay1","TalepNET","car"],["tn-kay2","TalepNET","car"],["tn-kay3","TalepNET","car"],["adsiz2","TalepNET","story"],
- ["tn-hikayeler","TalepNET","story",1],["tb1","TalepNET","bro"],["tb2","TalepNET","bro"],["tb3","TalepNET","bro",1],
- ["cs1","Cansağlığı Vakfı","camp"],["cs2","Cansağlığı Vakfı","camp"],["cs3","Cansağlığı Vakfı","camp"],
- ["fk4","Fokus+","news"],["fk3","Fokus+","news"],["fk1","Fokus+","car"],["fk2","Fokus+","car"],
- ["bb1","BizimBulut","web"],["bb2","BizimBulut","post"],["bb3","BizimBulut","post"],
- ["3wdl-kapak","3W Design Lab","cover"],["final-sheet","3W Design Lab","brand",1],
- ["basakgiller1","BSK","comic",1],["basakgiller2","BSK","comic",1],["basakgiller3","BSK","comic",1],["basakgiller4","BSK","comic",1],
- ["gitsek9","BSK","car"],["gitsek10","BSK","car"],["gitsek11","BSK","car"],["gitsek12","BSK","car"],
+ {b:"TalepNET",t:"post",s:["tn-ig1"]},
+ {b:"Fokus+",t:"newss",row:["fk4","fk3","fk1","fk2"]},
+ {b:"TalepNET",t:"car",car:["tn-kay1","tn-kay2","tn-kay3"]},
+ {b:"BizimBulut",t:"web",s:["bb1"]},
+ {b:"TalepNET",t:"post",s:["tn-ig2"]},
+ {b:"Cansağlığı Vakfı",t:"camps",row:["cs1","cs2","cs3"]},
+ {b:"3W Design Lab",t:"cover",s:["3wdl-kapak"]},
+ {b:"BSK",t:"car",car:["gitsek9","gitsek10","gitsek11","gitsek12"]},
+ {b:"TalepNET",t:"post",s:["tn-ig3"]},
+ {b:"BizimBulut",t:"post",s:["bb3"]},
+ {b:"TalepNET",t:"bros",row:["tb1","tb2","tb3"]},
+ {b:"BSK",t:"comic",car:["basakgiller1","basakgiller2","basakgiller3","basakgiller4"]},
+ {b:"TalepNET",t:"post",s:["tn-ig4"]},
+ {b:"TalepNET",t:"post",s:["tn-crm"]},
+ {b:"BizimBulut",t:"post",s:["bb2"]},
+ {b:"TalepNET",t:"post",s:["tn-teklif"]},
+ {b:"TalepNET",t:"story",s:["adsiz2"]},
+ {b:"3W Design Lab",t:"brand",s:["final-sheet"]},
+ {b:"TalepNET",t:"story",s:["tn-hikayeler"]},
 ];
 const LOGOS = [
- ["lg-temizmescit","Temiz Mescit",{tr:"Sosyal sorumluluk projesi",en:"Social awareness project"}],
- ["lg-floramat","Floramat",{tr:"Logo ve tipografi alternatifleri",en:"Logo & type explorations"}],
- ["lg-floramat-ft","Floramat",{tr:"Monogram",en:"Monogram"}],
- ["lg-kuzulu","Kuzulu Çiftliği",{tr:"Logo",en:"Logo"}],
- ["lg-minel","Minel Kuruyemiş",{tr:"Logo ve renk varyasyonları",en:"Logo & colour variants"}],
- ["lg-deeby","Deeby",{tr:"Açık ve koyu zemin versiyonları",en:"Light & dark versions"}],
- ["lg-triplex","Triplex Terminal",{tr:"Logo",en:"Logo"}],
+ ["temizmescit","Temiz Mescit",{tr:"Sosyal sorumluluk projesi",en:"Social awareness project"}],
+ ["floramat","Floramat",{tr:"Logo ve tipografi alternatifleri",en:"Logo & type explorations"}],
+ ["kuzulu","Kuzulu Çiftliği",{tr:"Logo",en:"Logo"}],
+ ["minel","Minel Kuruyemiş",{tr:"Logo ve renk varyasyonları",en:"Logo & colour variants"}],
+ ["deeby","Deeby",{tr:"Logo",en:"Logo"}],
+ ["triplex","Triplex Terminal",{tr:"Logo",en:"Logo"}],
 ];
 
 const T = {
- en:{"nav_v": "Videos", "nav_p": "Posts", "nav_l": "Logos", "nav_a": "About", "nav_c": "Contact", "eyebrow": "Social Media Specialist · Content Creator · Communicator · Designer", "lead": "I create content that catches trends early, adapts them to local audiences and reaches millions of views. Strategy, shooting, editing, design and copy: from idea to post, end to end.", "cta1": "See my work →", "cta2": "Get in touch", "s1b": "Millions", "s1": "of total views", "s2": "pieces published in the last year", "s3": "years in content and communications", "s4b": "End to end", "s4": "strategy, shooting, editing and design", "v_k": "01 · Video", "v_h": "Video <em>content</em>", "v_p": "Trend adaptations, an explainer series, event and promo videos made for Başakşehir Municipality, plus brand collaborations. Each video shows who it was made for.", "p_k": "02 · Design", "p_h": "Social media <em>posts</em>", "p_p": "Post, carousel and story designs for Instagram and LinkedIn, plus brochures and campaign visuals. Filter by brand.", "l_k": "03 · Identity", "l_h": "<em>Logos</em>", "l_p": "Logo and identity work for brands and social-impact projects.", "a_k": "About", "a_h": "I keep my finger on the <em>pulse</em>", "a_p1": "For the past year I've been Social Media Manager and Team Coordinator at Başakşehir Municipality in Istanbul. I develop communication strategies for the mayor, prepare agenda reports and manage the institution's voice on social media.", "a_p2": "With a background in shooting, editing and design, I can take a piece of content from idea to publication on my own — and write the copy too. I follow trends closely and adapt them to the city's and the brand's voice.", "a_p3": "Before that I spent about three years in design, video and corporate communications roles: full-time, part-time and freelance. I'm completing an MA in Radio, Television and Cinema at Ibn Haldun University, and AI tools are a natural part of my workflow.", "k_core": "What I do", "k_core2": "6 AREAS", "k1": "Strategy & Reporting", "k1p": "Communication strategy, agenda tracking and social media reports", "k2": "Trend Localisation", "k2p": "Spotting trends early and adapting them to the city and brand", "k3": "Shooting & Editing", "k3p": "Reels, series formats, interviews and promo videos", "k4": "Design", "k4p": "Posts, carousels, stories, brochures and logos", "k5": "Copywriting", "k5p": "Scripts, voice-over copy and captions", "k6": "Team Coordination", "k6p": "Content calendar, task allocation and shoot planning", "e_k": "Experience", "e_h": "Journey", "e1w": "Present · 1 year", "e1": "Social Media Manager & Team Coordinator", "e1p": "Başakşehir Municipality · Mayoral communication strategy, content production, reporting and team management", "e2w": "Brand collaboration", "e2": "Social Media Specialist & Content Creator", "e2p": "TalepNET · B2B procurement platform. Social media management, content production and all post design", "e3w": "Brand collaboration", "e3": "Social Media Specialist, Communicator & Designer", "e3p": "3W Design Lab · Design studio. Brand voice, reels and social communication", "e4w": "About 3 years", "e4": "Design, Video & Corporate Communications", "e4p": "Full-time, part-time and freelance work", "t_k": "Tools", "t_h": "The <em>toolkit</em>", "t_adobe": "Adobe Photoshop & Illustrator", "t_ai": "AI tools", "ed_k": "Education", "ed_h": "MA, Radio, Television & Cinema", "ed_p": "Ibn Haldun University · In progress", "c_h": "Let's <em>create</em>.", "c_p": "Reach out for a new role, project or collaboration.", "foot": "Social Media Specialist · Content Creator · Communicator · Designer · Istanbul"}
+ en:{"nav_v": "Videos", "nav_p": "Posts", "nav_l": "Logos", "nav_a": "About", "nav_c": "Contact", "eyebrow": "Social Media Specialist · Content Creator · Communicator & Designer", "lead": "I spot trends early, translate them into a brand's voice and create content that reaches millions. From idea and shoot to edit, design and copy, I handle every step with the same care, end to end.", "cta1": "See my work →", "cta2": "Get in touch", "s1b": "Millions", "s1": "of total views", "s2": "pieces published in the last year", "s3": "years in content and communications", "s4b": "End to end", "s4": "strategy, shooting, editing and design", "v_k": "01 · Video", "v_h": "Video <em>content</em>", "v_p": "Trend adaptations, an explainer series, event and promo videos made for Başakşehir Municipality, plus brand collaborations. Each video shows who it was made for.", "p_k": "02 · Design", "p_h": "Social media <em>posts</em>", "p_p": "Post, carousel and story designs for Instagram and LinkedIn, plus brochures and campaign visuals. Filter by brand.", "l_k": "03 · Identity", "l_h": "<em>Logos</em>", "l_p": "Logo and identity work for brands and social-impact projects.", "a_k": "About", "a_h": "I keep my finger on the <em>pulse</em>", "a_p1": "For the past year I've been Social Media Specialist and Team Coordinator at Başakşehir Municipality in Istanbul. I develop communication strategies for the mayor, prepare agenda reports and manage the institution's voice on social media.", "a_p2": "With a background in shooting, editing and design, I can take a piece of content from idea to publication on my own — and write the copy too. I follow trends closely and adapt them to the city's and the brand's voice.", "a_p3": "Before that I spent about three years in design, video and corporate communications roles: full-time, part-time and freelance. I'm completing an MA in Radio, Television and Cinema at Ibn Haldun University, and AI tools are a natural part of my workflow.", "k_core": "What I do", "k1": "Strategy & Reporting", "k1p": "Communication strategy, agenda tracking and social media reports", "k2": "Trend Localisation", "k2p": "Spotting trends early and adapting them to the city and brand", "k3": "Shooting & Editing", "k3p": "Reels, series formats, interviews and promo videos", "k4": "Design", "k4p": "Posts, carousels, stories, brochures and logos", "k5": "Copywriting", "k5p": "Scripts, voice-over copy and captions", "k6": "Team Coordination", "k6p": "Content calendar, task allocation and shoot planning", "e_k": "Experience", "e_h": "Journey", "e1w": "Present · 1 year", "e1": "Social Media Specialist & Team Coordinator", "e1p": "Başakşehir Municipality · Mayoral communication strategy, content production, reporting and team management", "e2w": "Brand collaboration", "e2": "Social Media Specialist & Content Creator", "e2p": "TalepNET · B2B procurement platform. Social media management, content production and all post design", "e3w": "Brand collaboration", "e3": "Social Media Specialist, Communicator & Designer", "e3p": "3W Design Lab · Design studio. Brand voice, reels and social communication", "e4w": "3 years", "e4": "Design, Video & Corporate Communications", "e4p": "Full-time, part-time and freelance work", "t_k": "Tools", "t_h": "The <em>toolkit</em>", "t_adobe": "Adobe Photoshop & Illustrator", "t_ai": "AI tools", "ed_k": "Education", "ed_h": "Ibn Haldun University · MA", "ed_p": "Radio, Television & Cinema · In progress", "c_h": "Let's <em>create</em>.", "c_p": "Reach out for a new role, project or collaboration.", "foot": "Social Media Specialist · Content Creator · Communicator & Designer · Istanbul"}
 };
 const TR = {};
 document.querySelectorAll("[data-i]").forEach(el=>TR[el.dataset.i]=el.innerHTML);
@@ -496,7 +527,7 @@ const PLAY = '<svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg>';
 function renderChips(){
   $("#chips").innerHTML = CATS.map(c=>{
     const n = c.id==="all"?V.length:V.filter(v=>v[1]===c.id).length;
-    return `<button class="chip${c.id===cur?" on":""}" data-c="${c.id}">${tx(c)}<sup>${n}</sup></button>`}).join("");
+    return `<button class="chip${c.id===cur?" on":""}" data-c="${c.id}">${tx(c)}</button>`}).join("");
   $("#chips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{cur=b.dataset.c;vshow=VSTEP;renderChips();renderGrid()});
 }
 const VSTEP=15, PSTEP=12; let vshow=VSTEP, pshow=PSTEP;
@@ -530,25 +561,55 @@ function renderGrid(){
 let pcur="all";
 const RAT={"basakgiller1": 1.0, "tn-kay1": 1.25, "tn-teklif": 1.25, "lg-floramat-ft": 0.75, "bb2": 1.25, "lg-floramat": 0.75, "lg-temizmescit": 0.75, "tn-ig1": 1.25, "tn-kay2": 1.25, "lg-kuzulu": 0.75, "tn-ig4": 1.25, "tn-hikayeler": 0.583, "lg-minel": 0.75, "tb1": 1.414, "basakgiller2": 1.0, "fk4": 1.362, "lg-deeby": 0.75, "tb6": 1.25, "gitsek11": 1.25, "bb3": 1.25, "tn-ig3": 1.25, "fk2": 1.362, "gitsek12": 1.25, "cs2": 1.25, "fk3": 1.362, "tn-kay3": 1.25, "fk1": 1.362, "3wdl-kapak": 1.778, "adsiz2": 1.776, "lg-triplex": 0.75, "bb1": 1.25, "tn-crm": 1.25, "cs3": 1.25, "basakgiller4": 1.0, "tb4": 1.25, "tb3": 0.707, "tb2": 1.414, "final-sheet": 0.535, "gitsek10": 1.25, "cs1": 1.25, "tn-ig2": 1.25, "basakgiller3": 1.0, "tb5": 1.0, "gitsek9": 1.25};
 const mcols=()=>{const w=$("#pgrid").clientWidth||innerWidth;return w>=1080?4:w>=720?3:2};
-let lastCols=0;
-addEventListener("resize",()=>{if(mcols()!==lastCols)renderProjects()},{passive:true});
+let lastCols=0, carT=null;
+const imgs = it => it.s||it.row||it.car;
+function sizePosts(){const g=$("#pgrid"),gap=innerWidth<=520?10:14;
+  g.querySelectorAll(".post").forEach(el=>{el.style.gridRowEnd="auto"});
+  g.querySelectorAll(".post").forEach(el=>{el.style.gridRowEnd=`span ${Math.ceil(el.getBoundingClientRect().height+gap)}`});}
+addEventListener("resize",()=>{clearTimeout(carT);carT=setTimeout(()=>{if(mcols()!==lastCols)renderProjects();else sizePosts()},80)},{passive:true});
 const brand = b => b==="BSK" ? tx(BSK) : b;
 function renderProjects(){
-  const brands=[...new Set(POSTS.map(p=>p[1]))];
-  $("#pchips").innerHTML = [["all",L==="en"?"All":"Tümü",POSTS.length],...brands.map(b=>[b,brand(b),POSTS.filter(p=>p[1]===b).length])]
-    .map(([id,n,c])=>`<button class="chip${id===pcur?" on":""}" data-b="${id}">${n}<sup>${c}</sup></button>`).join("");
+  const brands=[...new Set(POSTS.map(p=>p.b))];
+  $("#pchips").innerHTML = [["all",L==="en"?"All":"Tümü"],...brands.map(b=>[b,brand(b)])]
+    .map(([id,n])=>`<button class="chip${id===pcur?" on":""}" data-b="${id}">${n}</button>`).join("");
   $("#pchips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{pcur=b.dataset.b;pshow=PSTEP;renderProjects()});
-  const ps = POSTS.filter(p=>pcur==="all"||p[1]===pcur);
-  const n=mcols(); lastCols=n; const cols=Array.from({length:n},()=>[]), hs=Array(n).fill(0);
-  ps.slice(0,pshow).forEach((p,i)=>{const r=RAT[p[0]]||1.25; const c=hs.indexOf(Math.min(...hs));
-    cols[c].push(`<button class="post" data-k="${i}"><span class="im" style="aspect-ratio:1/${r}"><img src="d/${p[0]}.jpg" alt="${brand(p[1])}" loading="lazy"></span><span class="cap"><b>${brand(p[1])}</b><span>${tx(TY[p[2]])}</span></span></button>`);
-    hs[c]+=r+0.3;});
-  $("#pgrid").innerHTML = cols.map(c=>`<div class="mcol">${c.join("")}</div>`).join("");
-  const items = ps.map(p=>({t:"i",s:p[0],title:tx(TY[p[2]]),cat:brand(p[1])}));
-  $("#pgrid").querySelectorAll(".post").forEach(b=>b.onclick=()=>openM(items,+b.dataset.k));
+  const ps = POSTS.filter(p=>pcur==="all"||p.b===pcur), n=mcols(); lastCols=n;
+  const items=[]; let html="";
+  ps.slice(0,pshow).forEach((p,i)=>{
+    const start=items.length, list=imgs(p);
+    list.forEach((k,j)=>items.push({t:"i",s:k,title:tx(TY[p.t])+(list.length>1?` · ${j+1}/${list.length}`:""),cat:brand(p.b)}));
+    const cap=`<span class="cap"><b>${brand(p.b)}</b><span>${tx(TY[p.t])}</span></span>`;
+    let body, sp=1;
+    if(p.row){ sp=Math.min(p.row.length,n); const per=p.row.length;
+      const rows=[]; for(let r=0;r<p.row.length;r+=per)rows.push(p.row.slice(r,r+per));
+      body=rows.map(rw=>`<span class="prow">${rw.map(k=>{const r=RAT[k]||1.25;const j=p.row.indexOf(k);return `<span class="pi" data-j="${j}" style="flex-grow:${(1/r).toFixed(3)};aspect-ratio:1/${r}"><img src="d/${k}.jpg" alt="${brand(p.b)}" loading="lazy"></span>`}).join("")}</span>`).join("");
+      body=`<span class="im rowim${n===2?" sc":""}">${body}</span>`;
+    } else if(p.car){ const r=RAT[p.car[0]]||1.25;
+      body=`<span class="im carim" style="aspect-ratio:1/${r}"><span class="track">${p.car.map(k=>`<img src="d/${k}.jpg" alt="${brand(p.b)}" loading="lazy">`).join("")}</span>
+        <span class="cbadge"><svg viewBox="0 0 16 16"><rect x="1" y="3" width="10" height="10" rx="2"/><path d="M13 5v8a2 2 0 0 1-2 2H5"/></svg><i>1</i>/${p.car.length}</span>
+        <span class="dots">${p.car.map((_,j)=>`<i${j?"":' class="on"'}></i>`).join("")}</span></span>`;
+    } else { const r=RAT[p.s[0]]||1.25; body=`<span class="im" style="aspect-ratio:1/${r}"><img src="d/${p.s[0]}.jpg" alt="${brand(p.b)}" loading="lazy"></span>`; }
+    html+=`<div class="post${p.row?" wide":""}${p.car?" car":""}" role="button" tabindex="0" data-k="${start}" style="grid-column:span ${sp}">${body}${cap}</div>`;
+  });
+  $("#pgrid").style.setProperty("--n",n);
+  $("#pgrid").innerHTML=html;
+  $("#pgrid").querySelectorAll(".post").forEach(el=>{
+    const k=+el.dataset.k, tr=el.querySelector(".track");
+    const cur=()=>tr?Math.round(tr.scrollLeft/tr.clientWidth):0;
+    el.onclick=e=>{const pi=e.target.closest(".pi");openM(items,k+(pi?+pi.dataset.j:cur()))};
+    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}};
+    if(tr){ const dots=[...el.querySelectorAll(".dots i")], num=el.querySelector(".cbadge i"); let t=null;
+      const upd=()=>{const c=cur();dots.forEach((d,j)=>d.classList.toggle("on",j===c));num.textContent=c+1};
+      tr.addEventListener("scroll",()=>requestAnimationFrame(upd),{passive:true});
+      const next=()=>{const c=cur(),N=dots.length;tr.scrollTo({left:((c+1)%N)*tr.clientWidth,behavior:"smooth"})};
+      el.addEventListener("mouseenter",()=>{if(matchMedia("(hover:hover)").matches){next();t=setInterval(next,1300)}});
+      el.addEventListener("mouseleave",()=>{clearInterval(t);t=null;tr.scrollTo({left:0,behavior:"smooth"})});
+    }
+  });
+  sizePosts(); $("#pgrid").querySelectorAll("img").forEach(im=>im.addEventListener("load",sizePosts,{once:true}));
   moreBtn($("#pmore"),ps.length-pshow,()=>{pshow+=PSTEP;renderProjects()});
-  $("#lgrid").innerHTML = LOGOS.map((l,i)=>`<button class="logo-c" data-k="${i}"><span class="im"><img src="d/${l[0]}.jpg" alt="${l[1]}" loading="lazy"></span><span class="cap"><b>${l[1]}</b><span>${tx(l[2])}</span></span></button>`).join("");
-  const litems = LOGOS.map(l=>({t:"i",s:l[0],title:tx(l[2]),cat:l[1]}));
+  $("#lgrid").innerHTML = LOGOS.map((l,i)=>`<button class="logo-c" data-k="${i}"><span class="im"><img src="d/lgd-${l[0]}.webp" alt="${l[1]}" loading="lazy"></span><span class="cap"><b>${l[1]}</b><span>${tx(l[2])}</span></span></button>`).join("");
+  const litems = LOGOS.map(l=>({t:"i",s:"lg-"+l[0],title:tx(l[2]),cat:l[1]}));
   $("#lgrid").querySelectorAll(".logo-c").forEach(b=>b.onclick=()=>openM(litems,+b.dataset.k));
   observe();
 }
