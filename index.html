@@ -720,14 +720,15 @@ hero();renderContact();setLang(L);observe();
   const pt=(x,y)=>({x,y,px:x,py:y,pin:false});
   function size(){dpr=Math.min(devicePixelRatio||1,2);W=hero.clientWidth;H=hero.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
     const wrap=hero.querySelector(".wrap").getBoundingClientRect(),hr=hero.getBoundingClientRect();
-    ax=Math.min(W-110,wrap.right-hr.left-60);ay=-6;}
+    const lm=wrap.left-hr.left; // içeriğin solundaki boş alan
+    ax=lm>=250?lm/2:Math.min(W-110,wrap.right-hr.left-60);ay=-6;}
   size();
   // ip noktaları + kartın iki ucu (klips & alt kenar)
-  for(let i=0;i<=N;i++)P.push(pt(ax+i*9,ay-260+i*4));
-  P.push(pt(ax+N*9,ay-260+N*4+CH));P[0].pin=true;P[0].x=P[0].px=ax;P[0].y=P[0].py=ay;
+  for(let i=0;i<=N;i++)P.push(pt(ax+i*3,ay-260+i*4));
+  P.push(pt(ax+N*3,ay-260+N*4+CH));P[0].pin=true;P[0].x=P[0].px=ax;P[0].y=P[0].py=ay;
   const L=i=>i===N+1?CH:SEG;
   function step(){t++;const br=Math.sin(t/90)*.05+Math.sin(t/37)*.02;
-    for(const p of P){if(p.pin)continue;const vx=(p.x-p.px)*.988,vy=(p.y-p.py)*.988;p.px=p.x;p.py=p.y;p.x+=vx+(cut?0:br);p.y+=vy+G;}
+    for(const p of P){if(p.pin)continue;const vx=(p.x-p.px)*.982,vy=(p.y-p.py)*.982;p.px=p.x;p.py=p.y;p.x+=vx+(cut?0:br);p.y+=vy+G;}
     if(drag){const b=P[N+1];b.x=drag.x;b.y=drag.y;}
     for(let k=0;k<14;k++){if(!cut){P[0].x=ax;P[0].y=ay}
       for(let i=1;i<P.length;i++){const a=P[i-1],b=P[i],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,diff=(d-L(i))/d;
