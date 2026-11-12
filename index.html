@@ -737,10 +737,10 @@ hero();renderContact();setLang(L);observe();
   function draw(){ctx.clearRect(0,0,W,H);
     const pts=P.slice(0,N+1);
     // kayış
-    for(const [w,c] of [[13,"#4b1fc4"],[9,"#723BFA"],[2,"rgba(255,255,255,.35)"]]){ctx.lineWidth=w;ctx.strokeStyle=c;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+    for(const [w,c] of [[12,"#050506"],[9,"#17171a"],[1.5,"rgba(255,255,255,.12)"]]){ctx.lineWidth=w;ctx.strokeStyle=c;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
       for(let i=1;i<pts.length-1;i++){const m={x:(pts[i].x+pts[i+1].x)/2,y:(pts[i].y+pts[i+1].y)/2};ctx.quadraticCurveTo(pts[i].x,pts[i].y,m.x,m.y)}
       ctx.lineTo(pts[N].x,pts[N].y);ctx.stroke()}
-    if(!cut){ctx.fillStyle="#B9F500";ctx.beginPath();ctx.arc(ax,ay+6,5,0,7);ctx.fill()}
+    if(!cut){ctx.fillStyle="#0b0b0d";ctx.beginPath();ctx.arc(ax,ay+6,6,0,7);ctx.fill()}
     const a=P[N],b=P[N+1],ang=Math.atan2(b.y-a.y,b.x-a.x)-Math.PI/2,vx=b.x-b.px;
     card.style.transform=`translate(${a.x-CW/2}px,${a.y}px) rotate(${ang}rad)`;
     inner.style.transform=`perspective(700px) rotateY(${Math.max(-35,Math.min(35,vx*2.2))}deg)`;
