@@ -256,12 +256,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 @keyframes d1{to{transform:translate(18vw,22vh) scale(1.15)}}
 @keyframes d2{to{transform:translate(-22vw,-14vh) scale(.9)}}
 @keyframes d3{to{transform:translate(-12vw,-20vh) scale(1.1)}}
-/* cursor glow */
-.glow{position:fixed;left:0;top:0;width:220px;height:220px;margin:-110px 0 0 -110px;border-radius:50%;pointer-events:none;z-index:1;opacity:0;transition:opacity .4s;
-  background:radial-gradient(circle,rgba(159,123,255,.22) 0%,rgba(114,59,250,.10) 35%,rgba(114,59,250,0) 70%);will-change:transform}
-.glow.on{opacity:1}
-@media(hover:none),(pointer:coarse){.glow{display:none}}
-@media(prefers-reduced-motion:reduce){.amb i{animation:none}.glow{display:none}}
+@media(prefers-reduced-motion:reduce){.amb i{animation:none}}
 
 /* Yaka kartı (lanyard) */
 .lny{position:absolute;inset:0;z-index:5;pointer-events:none}
@@ -292,7 +287,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </head>
 <body>
 <div class="amb" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i><canvas id="dots"></canvas></div>
-<div class="glow" aria-hidden="true"></div>
 
 <nav>
   <div class="wrap">
@@ -818,12 +812,6 @@ document.querySelectorAll(".btn.spec").forEach(b=>{const fine=matchMedia("(hover
       kick()},{passive:true});
   }
   build();
-})();
-(()=>{const g=document.querySelector(".glow");if(!g||!matchMedia("(hover:hover) and (pointer:fine)").matches||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
-let tx=innerWidth/2,ty=innerHeight/2,x=tx,y=ty,run=false;
-const loop=()=>{x+=(tx-x)*.12;y+=(ty-y)*.12;g.style.transform=`translate3d(${x}px,${y}px,0)`;if(Math.abs(tx-x)+Math.abs(ty-y)>.5)requestAnimationFrame(loop);else run=false;};
-addEventListener("pointermove",e=>{tx=e.clientX;ty=e.clientY;g.classList.add("on");if(!run){run=true;requestAnimationFrame(loop);}},{passive:true});
-document.addEventListener("pointerleave",()=>g.classList.remove("on"));
 })();
 </script>
 </body>
