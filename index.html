@@ -278,6 +278,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .lcard .clip{position:absolute;left:50%;top:-22px;width:22px;height:30px;margin-left:-11px;border-radius:6px 6px 4px 4px;background:linear-gradient(90deg,#8d8c94,#f1f1f4 45%,#a9a8b0 60%,#e6e6ea);box-shadow:0 2px 4px rgba(0,0,0,.4)}
 .lcard .clip::after{content:"";position:absolute;left:5px;right:5px;top:5px;height:8px;border-radius:4px;background:#2a2930}
 @media(max-width:1000px),(prefers-reduced-motion:reduce){.lny{display:none}}
+
+/* Specular buton: imleci takip eden parlak kenar çizgisi */
+.btn.spec{--x:50%;--y:0%;--p:.35;position:relative;isolation:isolate;padding:18px 32px;font-size:17px;border-radius:18px;
+  box-shadow:0 0 calc(34px*var(--p)) rgba(185,245,0,calc(.45*var(--p))),0 10px 30px rgba(0,0,0,.35);transition:transform .2s,box-shadow .25s}
+.btn.spec::before{content:"";position:absolute;inset:-3px;border-radius:21px;padding:1.2px;pointer-events:none;
+  background:radial-gradient(70px circle at var(--x) var(--y),rgba(255,255,255,calc(var(--p))) 0%,rgba(255,255,255,0) 100%),rgba(185,245,0,.28);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.btn.spec::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:radial-gradient(120px circle at var(--x) var(--y),rgba(255,255,255,calc(.38*var(--p))),rgba(255,255,255,0) 70%),linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 55%);mix-blend-mode:soft-light}
+.btn.spec:active{transform:translateY(0) scale(.98)}
 </style>
 </head>
 <body>
@@ -308,7 +318,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <h1>Hilal<br><em>Tuncer</em></h1>
       <p class="lead" data-i="lead">Akımları erken yakalayıp markanın diline çeviriyor, milyonlara ulaşan içerikler üretiyorum. Fikirden çekime, kurgudan tasarıma ve metne kadar her adımı aynı özenle, tek elden yürütüyorum.</p>
       <div class="cta">
-        <a href="#videolar" class="btn p" data-i="cta1">İşlerimi gör →</a>
+        <a href="#videolar" class="btn p spec" data-i="cta1">İşlerimi gör →</a>
         <a href="#iletisim" class="btn g cl" data-i="cta2">İletişime geç</a>
       </div>
     </div>
@@ -713,6 +723,13 @@ function observe(){
 hero();renderContact();setLang(L);observe();
 </script>
 <script>
+// Specular buton: yakınlığa göre parlaklık, boşta kenar boyunca gezen ışık
+document.querySelectorAll(".btn.spec").forEach(b=>{const fine=matchMedia("(hover:hover) and (pointer:fine)").matches;let near=false,t=0,raf=0;
+  const idle=()=>{if(near){raf=0;return}t+=.008;const a=t*Math.PI*2;b.style.setProperty("--x",(50+55*Math.cos(a))+"%");b.style.setProperty("--y",(50+70*Math.sin(a))+"%");b.style.setProperty("--p",.35);raf=requestAnimationFrame(idle)};
+  if(!matchMedia("(prefers-reduced-motion: reduce)").matches)idle();
+  if(fine)addEventListener("pointermove",e=>{const r=b.getBoundingClientRect(),cx=Math.max(r.left,Math.min(e.clientX,r.right)),cy=Math.max(r.top,Math.min(e.clientY,r.bottom)),d=Math.hypot(e.clientX-cx,e.clientY-cy);
+    if(d<250){near=true;b.style.setProperty("--x",(e.clientX-r.left)+"px");b.style.setProperty("--y",(e.clientY-r.top)+"px");b.style.setProperty("--p",(.35+.65*(1-d/250)).toFixed(3))}
+    else if(near){near=false;if(!raf)idle()}},{passive:true});});
 // Yaka kartı: açılışta sağdan iner, sürüklenir; sağa fırlatılınca kopup gider
 (()=>{const box=document.querySelector(".lny");if(!box||getComputedStyle(box).display==="none")return;
   const hero=box.parentElement,cv=box.querySelector("canvas"),ctx=cv.getContext("2d"),card=box.querySelector(".lcard"),inner=card.querySelector(".in"),gl=card.querySelector(".gl");
