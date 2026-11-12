@@ -262,6 +262,22 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .glow.on{opacity:1}
 @media(hover:none),(pointer:coarse){.glow{display:none}}
 @media(prefers-reduced-motion:reduce){.amb i{animation:none}.glow{display:none}}
+
+/* Yaka kartı (lanyard) */
+.lny{position:absolute;inset:0;z-index:5;pointer-events:none}
+.lny canvas{position:absolute;inset:0;width:100%;height:100%}
+.lcard{position:absolute;left:0;top:0;width:178px;height:262px;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;transform-origin:50% 0;will-change:transform}
+.lcard:active{cursor:grabbing}
+.lcard .in{position:absolute;inset:0;border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.45),0 2px 0 rgba(255,255,255,.6) inset;transform-style:preserve-3d}
+.lcard .ph{position:absolute;left:10px;right:10px;top:26px;height:166px;border-radius:10px;background:#fff url(d/badge.jpg) center 18%/cover no-repeat}
+.lcard .slot{position:absolute;left:50%;top:9px;width:38px;height:7px;margin-left:-19px;border-radius:9px;background:#d9d6e2;box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.lcard .nm{position:absolute;left:14px;right:14px;bottom:30px;font-weight:800;font-stretch:112%;font-size:15px;letter-spacing:.01em;color:#18181C;line-height:1.1}
+.lcard .rl{position:absolute;left:14px;right:14px;bottom:13px;font-size:10.5px;color:#5b5868;letter-spacing:.02em}
+.lcard .bar{position:absolute;right:14px;bottom:33px;width:9px;height:9px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 3px rgba(114,59,250,.9)}
+.lcard .gl{position:absolute;inset:0;border-radius:16px;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.55) 45%,rgba(255,255,255,0) 60%);mix-blend-mode:soft-light;background-size:250% 100%}
+.lcard .clip{position:absolute;left:50%;top:-22px;width:22px;height:30px;margin-left:-11px;border-radius:6px 6px 4px 4px;background:linear-gradient(90deg,#8d8c94,#f1f1f4 45%,#a9a8b0 60%,#e6e6ea);box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.lcard .clip::after{content:"";position:absolute;left:5px;right:5px;top:5px;height:8px;border-radius:4px;background:#2a2930}
+@media(max-width:1000px),(prefers-reduced-motion:reduce){.lny{display:none}}
 </style>
 </head>
 <body>
@@ -285,6 +301,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </nav>
 
 <header class="hero" id="top">
+  <div class="lny" aria-hidden="true"><canvas></canvas><div class="lcard"><div class="clip"></div><div class="in"><div class="slot"></div><div class="ph"></div><div class="nm">HİLAL TUNCER</div><div class="rl">Sosyal Medya Uzmanı</div><div class="bar"></div><div class="gl"></div></div></div></div>
   <div class="wrap">
     <div>
       <span class="eyebrow"><i></i><span data-i="eyebrow">Sosyal Medya Uzmanı · İçerik Üreticisi · İletişimci & Tasarımcı</span></span>
@@ -696,6 +713,54 @@ function observe(){
 hero();renderContact();setLang(L);observe();
 </script>
 <script>
+// Yaka kartı: açılışta sağdan iner, sürüklenir; sağa fırlatılınca kopup gider
+(()=>{const box=document.querySelector(".lny");if(!box||getComputedStyle(box).display==="none")return;
+  const hero=box.parentElement,cv=box.querySelector("canvas"),ctx=cv.getContext("2d"),card=box.querySelector(".lcard"),inner=card.querySelector(".in"),gl=card.querySelector(".gl");
+  const CW=178,CH=262,N=14,SEG=17,G=.55;let W,H,dpr,ax,ay,P=[],drag=null,cut=false,alive=true,vis=true,t=0;
+  const pt=(x,y)=>({x,y,px:x,py:y,pin:false});
+  function size(){dpr=Math.min(devicePixelRatio||1,2);W=hero.clientWidth;H=hero.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    const wrap=hero.querySelector(".wrap").getBoundingClientRect(),hr=hero.getBoundingClientRect();
+    ax=Math.min(W-110,wrap.right-hr.left-60);ay=-6;}
+  size();
+  // ip noktaları + kartın iki ucu (klips & alt kenar)
+  for(let i=0;i<=N;i++)P.push(pt(ax+i*9,ay-260+i*4));
+  P.push(pt(ax+N*9,ay-260+N*4+CH));P[0].pin=true;P[0].x=P[0].px=ax;P[0].y=P[0].py=ay;
+  const L=i=>i===N+1?CH:SEG;
+  function step(){t++;const br=Math.sin(t/90)*.05+Math.sin(t/37)*.02;
+    for(const p of P){if(p.pin)continue;const vx=(p.x-p.px)*.988,vy=(p.y-p.py)*.988;p.px=p.x;p.py=p.y;p.x+=vx+(cut?0:br);p.y+=vy+G;}
+    if(drag){const b=P[N+1];b.x=drag.x;b.y=drag.y;}
+    for(let k=0;k<14;k++){if(!cut){P[0].x=ax;P[0].y=ay}
+      for(let i=1;i<P.length;i++){const a=P[i-1],b=P[i],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,diff=(d-L(i))/d;
+        const wa=a.pin&&!cut?0:(drag&&i===N+1?.9:.5),wb=drag&&i===N+1?0:(i===N+1?.1:.5),tot=(wa+wb)||1;
+        if(!(a.pin&&!cut))a.x+=dx*diff*wa/tot,a.y+=dy*diff*wa/tot;b.x-=dx*diff*wb/tot;b.y-=dy*diff*wb/tot;}
+      if(drag){const b=P[N+1];b.x=drag.x;b.y=drag.y}}}
+  function draw(){ctx.clearRect(0,0,W,H);
+    const pts=P.slice(0,N+1);
+    // kayış
+    for(const [w,c] of [[13,"#4b1fc4"],[9,"#723BFA"],[2,"rgba(255,255,255,.35)"]]){ctx.lineWidth=w;ctx.strokeStyle=c;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+      for(let i=1;i<pts.length-1;i++){const m={x:(pts[i].x+pts[i+1].x)/2,y:(pts[i].y+pts[i+1].y)/2};ctx.quadraticCurveTo(pts[i].x,pts[i].y,m.x,m.y)}
+      ctx.lineTo(pts[N].x,pts[N].y);ctx.stroke()}
+    if(!cut){ctx.fillStyle="#B9F500";ctx.beginPath();ctx.arc(ax,ay+6,5,0,7);ctx.fill()}
+    const a=P[N],b=P[N+1],ang=Math.atan2(b.y-a.y,b.x-a.x)-Math.PI/2,vx=b.x-b.px;
+    card.style.transform=`translate(${a.x-CW/2}px,${a.y}px) rotate(${ang}rad)`;
+    inner.style.transform=`perspective(700px) rotateY(${Math.max(-35,Math.min(35,vx*2.2))}deg)`;
+    gl.style.backgroundPosition=`${50+ang*120+vx*4}% 0`;}
+  function loop(){if(!alive)return;if(vis||drag){step();draw()}
+    if(cut&&P.every(p=>p.x>W+300||p.y>H+400)){alive=false;box.remove();return}
+    requestAnimationFrame(loop)}
+  const local=e=>{const r=hero.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
+  let hist=[];
+  card.addEventListener("pointerdown",e=>{e.preventDefault();card.setPointerCapture(e.pointerId);const q=local(e),b=P[N+1];drag={x:b.x,y:b.y,ox:b.x-q.x,oy:b.y-q.y};hist=[]});
+  card.addEventListener("pointermove",e=>{if(!drag)return;const q=local(e);drag.x=q.x+drag.ox;drag.y=q.y+drag.oy;hist.push({x:q.x,t:performance.now()});if(hist.length>6)hist.shift()});
+  const up=e=>{if(!drag)return;const now=performance.now(),h=hist.filter(o=>now-o.t<120);
+    const v=h.length>1?(h[h.length-1].x-h[0].x)/Math.max(16,h[h.length-1].t-h[0].t)*16:0;
+    const b=P[N+1];drag=null;
+    if(v>14||(v>6&&b.x>W-120)){cut=true;P[0].pin=false;for(const p of P){p.px=p.x-v*1.1;p.py=p.y+4}}};
+  card.addEventListener("pointerup",up);card.addEventListener("pointercancel",up);
+  new IntersectionObserver(es=>{vis=es[0].isIntersecting}).observe(hero);
+  addEventListener("resize",()=>{clearTimeout(size.t);size.t=setTimeout(size,120)},{passive:true});
+  loop();
+})();
 // Etkileşimli nokta ızgarası arka planı (DotGrid)
 (()=>{const cv=document.getElementById("dots");if(!cv)return;const ctx=cv.getContext("2d");
   const C={base:[58,52,74],active:[159,123,255],shock:[185,245,0],size:5,gap:18,prox:140,strength:1,bounce:.6,tension:.4,shockR:320,shockS:5,swell:.8,glow:.5};
